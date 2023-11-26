@@ -27,9 +27,6 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@RequestBody @Valid UserDto userRequest) {
-        if (userRequest.getEmail() == null || !userRequest.getEmail().contains("@")) {
-            throw new ValidationException("Емейл не может быть пустой и емейл должен содержать @");
-        }
         User user = userMapper.convert(userRequest);
         return userMapper.convert(userService.save(user));
     }

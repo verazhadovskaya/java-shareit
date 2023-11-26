@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.errors.ObjectNotFoundException;
 import ru.practicum.shareit.errors.ValidationException;
@@ -20,10 +21,6 @@ public class ItemController {
 
     @PostMapping
     public ItemDto create(@RequestBody @Valid ItemDto itemRequest, @RequestHeader("X-Sharer-User-Id") Long userId) {
-        if (itemRequest.getAvailable() == null || itemRequest.getName() == null
-                || itemRequest.getDescription() == null || itemRequest.getName() == "") {
-            throw new ValidationException("Не заполнено обязательное поле");
-        }
         Item item = itemMapper.convert(itemRequest);
         item.setUserId(userId);
         return itemMapper.convert(itemService.save(item));
@@ -34,9 +31,6 @@ public class ItemController {
         Item currentItem = itemService.get(id);
         Item newItem = itemMapper.convert(itemRequest);
         newItem.setUserId(userId);
-        if (!currentItem.getUserId().equals(newItem.getUserId())) {
-            throw new ObjectNotFoundException("Нельзя обновить пользователя");
-        }
         return itemMapper.convert(itemService.update(currentItem, newItem, id));
     }
 
@@ -59,9 +53,6 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> getByText(@RequestParam(required = false) String text) {
-        if (text.isEmpty()) {
-            text = "-1";
-        }
         return itemService.getByText(text).stream()
                 .map(itemMapper::convert)
                 .collect(Collectors.toList());
