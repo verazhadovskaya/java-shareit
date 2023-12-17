@@ -26,7 +26,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             + "WHERE b.item.id  = ?1 "
             + "AND i.userId  = ?2 "
             + "ORDER BY b.startDate DESC")
-    List<Booking> findBookingItemId(Long Id, Long userId);
+    List<Booking> findBookingItemId(Long id, Long userId);
 
     @Query("SELECT b FROM Booking b "
             + "WHERE b.item.id  = ?1 "
@@ -34,7 +34,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             + "AND b.status  <> ?3 "
             + "AND b.startDate <  ?4 "
             + "ORDER BY b.startDate DESC")
-    List<Booking> findBookingItemForUserId(Long Id, Long userId, BookingStatus status, LocalDateTime date);
+    List<Booking> findBookingItemForUserId(Long id, Long userId, BookingStatus status, LocalDateTime date);
 
 
 }
