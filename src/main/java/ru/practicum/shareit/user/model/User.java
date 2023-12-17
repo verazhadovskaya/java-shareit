@@ -1,25 +1,21 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.user.model;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Item {
+public class User {
     private Long id;
-    @NotBlank
-    @NotEmpty
     private String name;
     @NotBlank
     @NotEmpty
-    private String description;
-    @NotBlank
-    @NotEmpty
-    private Boolean available;
-    private Long userId;
+    @Email
+    private String email;
 }

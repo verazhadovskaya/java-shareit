@@ -1,16 +1,15 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.user.dto;
+
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ItemRequest {
+public class UserDto {
     private Long id;
-    private Long userId;
     private String name;
-    private String description;
+    private String email;
 }
