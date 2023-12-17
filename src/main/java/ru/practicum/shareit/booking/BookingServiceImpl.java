@@ -98,8 +98,8 @@ public class BookingServiceImpl implements BookingService {
         if (!repository.existsById(id)) {
             throw new ObjectNotFoundException("Нет бронирования");
         }
-        if (repository.getById(id).getUser().getId() != userId
-                && repository.getById(id).getItem().getUserId() != userId) {
+        if (!repository.getById(id).getUser().getId().equals(userId)
+                && !repository.getById(id).getItem().getUserId().equals(userId)) {
             throw new ObjectNotFoundException("Данный пользователь не может получить чужое бронирование");
         }
         return bookingMapper.convertToDto(repository.getById(id));
