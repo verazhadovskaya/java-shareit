@@ -1,25 +1,32 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.persistence.*;
+
 
 @Getter
 @Setter
-@Accessors(chain = true)
+@Entity
+@Table(name = "items")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
-    @NotEmpty
+
+    @Column(name = "name", nullable = false)
     private String name;
-    @NotBlank
-    @NotEmpty
+
+    @Column(name = "description", nullable = false)
     private String description;
-    @NotBlank
-    @NotEmpty
+
+    @Column(name = "available", nullable = false)
     private Boolean available;
+
+    @Column(name = "user_id")
     private Long userId;
+
+
 }

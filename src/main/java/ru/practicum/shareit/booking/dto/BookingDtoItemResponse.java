@@ -5,21 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import ru.practicum.shareit.booking.BookingStatus;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingDto {
+public class BookingDtoItemResponse {
     private Long id;
-    private Long itemId;
-    private Long userId;
-    private LocalDateTime start;
-    private LocalDateTime end;
-    private String feedback;
-    private BookingStatus status;
+    private Long bookerId;
+
 }
