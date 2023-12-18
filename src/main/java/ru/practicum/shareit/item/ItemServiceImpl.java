@@ -81,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> allBookings = repository.findBookingByUserId(userId);
         if (!allBookings.isEmpty()) {
             List<Booking> bookings = allBookings.stream()
-                    .filter(b->b.getItem().getId().equals(itemDto.getId()))
+                    .filter(b -> b.getItem().getId().equals(itemDto.getId()))
                     .collect(Collectors.toList());
             Booking lastBooking = bookings.stream()
                     .filter(obj -> !(obj.getStatus().equals(BookingStatus.REJECTED)))
@@ -120,7 +120,7 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> allBookings = repository.findBookingByUserId(userId);
         for (ItemDto itemDto : listItem) {
             List<Booking> bookings = allBookings.stream()
-                    .filter(b->b.getItem().getId().equals(itemDto.getId()))
+                    .filter(b -> b.getItem().getId().equals(itemDto.getId()))
                     .collect(Collectors.toList());
             if (!bookings.isEmpty()) {
                 Booking lastBooking = bookings.stream()
@@ -167,7 +167,7 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto saveComment(CommentDto commentDto, Long itemId, Long userId) {
         Item item = repository.getById(itemId);
         User user = userRepository.getById(userId);
-        if (repository.findBookingItemForUserId(itemId, userId, BookingStatus.REJECTED, LocalDateTime.now())>0
+        if (repository.findBookingItemForUserId(itemId, userId, BookingStatus.REJECTED, LocalDateTime.now()) > 0
                 && !commentDto.getText().isEmpty() && !commentDto.getText().isBlank()) {
             Comment comment = CommentMapper.convertToComment(commentDto, item, user);
             return CommentMapper.convertToDto(commentRepository.save(comment), user);
