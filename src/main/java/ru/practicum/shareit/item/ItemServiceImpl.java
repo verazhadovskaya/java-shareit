@@ -73,14 +73,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
     public ItemDto get(Long id, Long userId) {
         if (!repository.existsById(id)) {
             throw new ObjectNotFoundException("Нет item");
         }
         ItemDto itemDto = ItemMapper.convertToDto(repository.getById(id));
-        List<Booking> bookings = repository.findBookingItemId(id, userId);
-        if (!bookings.isEmpty()) {
+        List<Booking> allBookings = repository.findBookingByUserId(userId);
+        if (!allBookings.isEmpty()) {
+            List<Booking> bookings = allBookings.stream()
+                    .filter(b->b.getItem().getId().equals(itemDto.getId()))
+                    .collect(Collectors.toList());
             Booking lastBooking = bookings.stream()
                     .filter(obj -> !(obj.getStatus().equals(BookingStatus.REJECTED)))
                     .filter(obj -> obj.getStartDate().isBefore(LocalDateTime.now()))
@@ -99,8 +101,11 @@ public class ItemServiceImpl implements ItemService {
         }
         List<Comment> comments = commentRepository.findAllByItemId(id);
         List<CommentDto> commentsDto = new ArrayList<>();
+        List<User> users = userRepository.findAll();
         for (Comment comment : comments) {
-            User user = userRepository.getById(comment.getUserId());
+            User user = users.stream()
+                    .filter(u -> u.getId().equals(comment.getUserId()))
+                    .findFirst().get();
             commentsDto.add(CommentMapper.convertToDto(comment, user));
         }
         itemDto.setComments(commentsDto);
@@ -108,13 +113,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
     public List<ItemDto> getAll(Long userId) {
         List<ItemDto> newListItem = new ArrayList<>();
         List<ItemDto> listItem = repository.findByUserId(userId).stream()
                 .map(ItemMapper::convertToDto).collect(Collectors.toList());
+        List<Booking> allBookings = repository.findBookingByUserId(userId);
         for (ItemDto itemDto : listItem) {
-            List<Booking> bookings = repository.findBookingItemId(itemDto.getId(), userId);
+            List<Booking> bookings = allBookings.stream()
+                    .filter(b->b.getItem().getId().equals(itemDto.getId()))
+                    .collect(Collectors.toList());
             if (!bookings.isEmpty()) {
                 Booking lastBooking = bookings.stream()
                         .filter(obj -> !(obj.getStatus().equals(BookingStatus.REJECTED)))
@@ -131,11 +138,13 @@ public class ItemServiceImpl implements ItemService {
                     itemDto.setNextBooking(BookingMapper.convertToDtoItem(nextBooking));
                 }
             }
-
             List<Comment> comments = commentRepository.findAllByItemId(itemDto.getId());
             List<CommentDto> commentsDto = new ArrayList<>();
+            List<User> users = userRepository.findAll();
             for (Comment comment : comments) {
-                User user = userRepository.getById(comment.getUserId());
+                User user = (User) users.stream()
+                        .filter(u -> u.getId().equals(comment.getUserId()))
+                        .findFirst().get();
                 commentsDto.add(CommentMapper.convertToDto(comment, user));
             }
             itemDto.setComments(commentsDto);
@@ -145,7 +154,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
     public List<ItemDto> getByText(String text) {
         if (!StringUtils.hasText(text)) {
             text = "-1";
@@ -159,7 +167,7 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto saveComment(CommentDto commentDto, Long itemId, Long userId) {
         Item item = repository.getById(itemId);
         User user = userRepository.getById(userId);
-        if (!repository.findBookingItemForUserId(itemId, userId, BookingStatus.REJECTED, LocalDateTime.now()).isEmpty()
+        if (repository.findBookingItemForUserId(itemId, userId, BookingStatus.REJECTED, LocalDateTime.now())>0
                 && !commentDto.getText().isEmpty() && !commentDto.getText().isBlank()) {
             Comment comment = CommentMapper.convertToComment(commentDto, item, user);
             return CommentMapper.convertToDto(commentRepository.save(comment), user);

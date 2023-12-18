@@ -93,7 +93,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
     public BookingDtoResponse get(Long id, Long userId) {
         if (!repository.existsById(id)) {
             throw new ObjectNotFoundException("Нет бронирования");
@@ -106,7 +105,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
     public List<BookingDtoResponse> getAll(Long userId, String state) {
         if (userService.get(userId) == null) {
             throw new ObjectNotFoundException("Нет пользователя");
@@ -138,7 +136,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    @Transactional
     public List<BookingDtoResponse> getAllByOwner(Long userId, String state) {
         if (userService.get(userId) == null) {
             throw new ObjectNotFoundException("Нет пользователя");

@@ -61,7 +61,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserDto get(Long id) {
         if (!repository.existsById(id)) {
             throw new ObjectNotFoundException("Нет пользователя для обновления");
@@ -70,7 +69,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public List<UserDto> getAll() {
         return repository.findAll().stream()
                 .map(UserMapper::convertToUserDto).collect(Collectors.toList());

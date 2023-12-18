@@ -10,27 +10,27 @@ import java.util.List;
 interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b "
-            + "WHERE b.user.id = ?1 "
+            + "WHERE b.user.id = :userId "
             + "ORDER BY b.startDate DESC")
     List<Booking> findByUserId(Long userId);
 
     @Query("SELECT b FROM Booking b "
             + "INNER JOIN Item i ON b.item.id = i.id "
-            + "WHERE i.userId = ?1 "
+            + "WHERE i.userId = :userId "
             + "ORDER BY b.startDate DESC")
     List<Booking> findByOwnerId(Long userId);
 
 
     @Query("SELECT b FROM Booking b "
-            + "WHERE b.user.id = ?1 "
-            + "AND b.startDate <  ?2 "
-            + "AND b.endDate >  ?2 "
+            + "WHERE b.user.id = :userId "
+            + "AND b.startDate <  :date "
+            + "AND b.endDate >  :date "
             + "ORDER BY b.startDate ASC")
     List<Booking> findByUserIdCurrent(Long userId, LocalDateTime date);
 
     @Query("SELECT b FROM Booking b "
-            + "WHERE b.user.id = ?1 "
-            + "AND b.endDate <  ?2 "
+            + "WHERE b.user.id = :userId "
+            + "AND b.endDate <  :date "
             + "ORDER BY b.startDate DESC")
     List<Booking> findByUserIdPast(Long userId, LocalDateTime date);
 
