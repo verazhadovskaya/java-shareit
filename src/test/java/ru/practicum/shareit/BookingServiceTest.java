@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.booking.*;
+import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.errors.ObjectNotFoundException;
 import ru.practicum.shareit.errors.ValidationException;
 import ru.practicum.shareit.item.*;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 
@@ -56,11 +58,14 @@ public class BookingServiceTest {
                 .thenReturn(booking);
         Mockito.when(itemService.get(anyLong(), anyLong()))
                 .thenReturn(ItemMapper.convertToDto(item));
-        assertEquals(bookingService.save(BookingMapper.convertToBookingDto(booking), 2L).getStart(), booking.getStartDate());
-        assertEquals(bookingService.save(BookingMapper.convertToBookingDto(booking), 2L).getEnd(), booking.getEndDate());
-        assertEquals(bookingService.save(BookingMapper.convertToBookingDto(booking), 2L).getBooker().getId(), booking.getUser().getId());
-        assertEquals(bookingService.save(BookingMapper.convertToBookingDto(booking), 2L).getItem().getId(), booking.getItem().getId());
-        assertEquals(bookingService.save(BookingMapper.convertToBookingDto(booking), 2L).getId(), booking.getId());
+        BookingDtoResponse b = bookingService.save(BookingMapper.convertToBookingDto(booking), 2L);
+        assertAll("Should return booking",
+                () -> assertEquals(b.getStart(), booking.getStartDate()),
+                () -> assertEquals(b.getEnd(), booking.getEndDate()),
+                () -> assertEquals(b.getBooker().getId(), booking.getUser().getId()),
+                () -> assertEquals(b.getItem().getId(), booking.getItem().getId()),
+                () -> assertEquals(b.getId(), booking.getId())
+        );
     }
 
 
@@ -98,11 +103,14 @@ public class BookingServiceTest {
                 .thenReturn(true);
         Mockito.when(bookingRepository.getById(anyLong()))
                 .thenReturn(booking);
-        assertEquals(bookingService.get(1L, 1L).getStart(), booking.getStartDate());
-        assertEquals(bookingService.get(1L, 1L).getEnd(), booking.getEndDate());
-        assertEquals(bookingService.get(1L, 1L).getBooker().getId(), booking.getUser().getId());
-        assertEquals(bookingService.get(1L, 1L).getItem().getId(), booking.getItem().getId());
-        assertEquals(bookingService.get(1L, 1L).getId(), booking.getId());
+        BookingDtoResponse b = bookingService.get(1L, 1L);
+        assertAll("Should return booking",
+                () -> assertEquals(b.getStart(), booking.getStartDate()),
+                () -> assertEquals(b.getEnd(), booking.getEndDate()),
+                () -> assertEquals(b.getBooker().getId(), booking.getUser().getId()),
+                () -> assertEquals(b.getItem().getId(), booking.getItem().getId()),
+                () -> assertEquals(b.getId(), booking.getId())
+        );
 
     }
 

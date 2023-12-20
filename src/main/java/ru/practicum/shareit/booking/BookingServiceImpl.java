@@ -109,10 +109,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoResponse> getAll(Long userId, String state, int from, int size) {
-        if (from < 0 || size == 0) {
-            throw new ValidationException("from должен быть больше или равен 0, size - больше 0");
-        }
-        Pageable page = PageRequest.of(from / size, size, Sort.by("id"));
+        Pageable page = pageParam(from, size);
         if (userService.get(userId) == null) {
             throw new ObjectNotFoundException("Нет пользователя");
         }
@@ -144,36 +141,40 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoResponse> getAllByOwner(Long userId, String state, int from, int size) {
+            Pageable page = pageParam(from, size);
+            if (userService.get(userId) == null) {
+                throw new ObjectNotFoundException("Нет пользователя");
+            }
+            LocalDateTime date = LocalDateTime.now();
+            List<BookingDtoResponse> list = new ArrayList<>();
+            if (state.equals("ALL")) {
+                list = repository.findByOwnerId(userId, page).stream()
+                        .map(BookingMapper::convertToDto).collect(Collectors.toList());
+            } else if (state.equals("CURRENT")) {
+                list = repository.findByOwnerIdCurrent(userId, date, page).stream()
+                        .map(BookingMapper::convertToDto).collect(Collectors.toList());
+            } else if (state.equals("PAST")) {
+                list = repository.findByOwnerIdPast(userId, date, page).stream()
+                        .map(BookingMapper::convertToDto).collect(Collectors.toList());
+            } else if (state.equals("FUTURE")) {
+                list = repository.findByOwnerIdFuture(userId, date, page).stream()
+                        .map(BookingMapper::convertToDto).collect(Collectors.toList());
+            } else if (state.equals("WAITING")) {
+                list = repository.findByOwnerIdWaiting(userId, BookingStatus.WAITING, page).stream()
+                        .map(BookingMapper::convertToDto).collect(Collectors.toList());
+            } else if (state.equals("REJECTED")) {
+                list = repository.findByOwnerIdReject(userId, BookingStatus.REJECTED, page).stream()
+                        .map(BookingMapper::convertToDto).collect(Collectors.toList());
+            } else {
+                throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
+            }
+            return list;
+    }
+
+    public Pageable pageParam(int from, int size) {
         if (from < 0 || size == 0) {
             throw new ValidationException("from должен быть больше или равен 0, size - больше 0");
         }
-        Pageable page = PageRequest.of(from / size, size, Sort.by("id"));
-        if (userService.get(userId) == null) {
-            throw new ObjectNotFoundException("Нет пользователя");
-        }
-        LocalDateTime date = LocalDateTime.now();
-        List<BookingDtoResponse> list = new ArrayList<>();
-        if (state.equals("ALL")) {
-            list = repository.findByOwnerId(userId, page).stream()
-                    .map(BookingMapper::convertToDto).collect(Collectors.toList());
-        } else if (state.equals("CURRENT")) {
-            list = repository.findByOwnerIdCurrent(userId, date, page).stream()
-                    .map(BookingMapper::convertToDto).collect(Collectors.toList());
-        } else if (state.equals("PAST")) {
-            list = repository.findByOwnerIdPast(userId, date, page).stream()
-                    .map(BookingMapper::convertToDto).collect(Collectors.toList());
-        } else if (state.equals("FUTURE")) {
-            list = repository.findByOwnerIdFuture(userId, date, page).stream()
-                    .map(BookingMapper::convertToDto).collect(Collectors.toList());
-        } else if (state.equals("WAITING")) {
-            list = repository.findByOwnerIdWaiting(userId, BookingStatus.WAITING, page).stream()
-                    .map(BookingMapper::convertToDto).collect(Collectors.toList());
-        } else if (state.equals("REJECTED")) {
-            list = repository.findByOwnerIdReject(userId, BookingStatus.REJECTED, page).stream()
-                    .map(BookingMapper::convertToDto).collect(Collectors.toList());
-        } else {
-            throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
-        }
-        return list;
+        return PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "startDate"));
     }
 }

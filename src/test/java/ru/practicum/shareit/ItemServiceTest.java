@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.errors.ObjectNotFoundException;
 import ru.practicum.shareit.errors.ValidationException;
 import ru.practicum.shareit.item.*;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -66,12 +68,15 @@ public class ItemServiceTest {
                 .thenReturn(true);
         Mockito.when(itemRepository.save(any()))
                 .thenReturn(item);
-        assertEquals(itemService.save(ItemMapper.convertToDto(item), 1L).getDescription(), item.getDescription());
-        assertEquals(itemService.save(ItemMapper.convertToDto(item), 1L).getName(), item.getName());
-        assertEquals(itemService.save(ItemMapper.convertToDto(item), 1L).getAvailable(), item.getAvailable());
-        assertEquals(itemService.save(ItemMapper.convertToDto(item), 1L).getUserId(), item.getUserId());
-        assertEquals(itemService.save(ItemMapper.convertToDto(item), 1L).getRequestId(), item.getRequestId());
-        assertNotNull(itemService.save(ItemMapper.convertToDto(item), 1L).getId());
+        ItemDto i = itemService.save(ItemMapper.convertToDto(item), 1L);
+        assertAll("Should return item",
+                () -> assertEquals(i.getDescription(), item.getDescription()),
+                () -> assertEquals(i.getName(), item.getName()),
+                () -> assertEquals(i.getAvailable(), item.getAvailable()),
+                () -> assertEquals(i.getUserId(), item.getUserId()),
+                () -> assertEquals(i.getRequestId(), item.getRequestId()),
+                () -> assertNotNull(i.getId())
+        );
     }
 
     @Test
@@ -100,12 +105,15 @@ public class ItemServiceTest {
         Item updateItem = new Item(1L, "nameUpdate", "descriptionUpdate", true, 1L, 1L);
         Mockito.when(itemRepository.save(any()))
                 .thenReturn(updateItem);
-        assertEquals(itemService.update(ItemMapper.convertToDto(item), ItemMapper.convertToDto(updateItem), 1L).getDescription(), updateItem.getDescription());
-        assertEquals(itemService.update(ItemMapper.convertToDto(item), ItemMapper.convertToDto(updateItem), 1L).getName(), updateItem.getName());
-        assertEquals(itemService.update(ItemMapper.convertToDto(item), ItemMapper.convertToDto(updateItem), 1L).getAvailable(), updateItem.getAvailable());
-        assertEquals(itemService.update(ItemMapper.convertToDto(item), ItemMapper.convertToDto(updateItem), 1L).getUserId(), updateItem.getUserId());
-        assertEquals(itemService.update(ItemMapper.convertToDto(item), ItemMapper.convertToDto(updateItem), 1L).getRequestId(), updateItem.getRequestId());
-        assertEquals(itemService.update(ItemMapper.convertToDto(item), ItemMapper.convertToDto(updateItem), 1L).getId(), updateItem.getId());
+        ItemDto i = itemService.update(ItemMapper.convertToDto(item), ItemMapper.convertToDto(updateItem), 1L);
+        assertAll("Should return item",
+                () -> assertEquals(i.getDescription(), updateItem.getDescription()),
+                () -> assertEquals(i.getName(), updateItem.getName()),
+                () -> assertEquals(i.getAvailable(), updateItem.getAvailable()),
+                () -> assertEquals(i.getUserId(), updateItem.getUserId()),
+                () -> assertEquals(i.getRequestId(), updateItem.getRequestId()),
+                () -> assertEquals(i.getId(), updateItem.getId())
+        );
     }
 
     @Test
@@ -137,12 +145,15 @@ public class ItemServiceTest {
                 .thenReturn(comments);
         Mockito.when(userRepository.findAll())
                 .thenReturn(Arrays.asList(user));
-        assertEquals(itemService.get(1L, 1L).getDescription(), item.getDescription());
-        assertEquals(itemService.get(1L, 1L).getName(), item.getName());
-        assertEquals(itemService.get(1L, 1L).getId(), item.getId());
-        assertEquals(itemService.get(1L, 1L).getAvailable(), item.getAvailable());
-        assertEquals(itemService.get(1L, 1L).getUserId(), item.getUserId());
-        assertEquals(itemService.get(1L, 1L).getRequestId(), item.getRequestId());
+        ItemDto i = itemService.get(1L, 1L);
+        assertAll("Should return item",
+                () -> assertEquals(i.getDescription(), item.getDescription()),
+                () -> assertEquals(i.getName(), item.getName()),
+                () -> assertEquals(i.getId(), item.getId()),
+                () -> assertEquals(i.getAvailable(), item.getAvailable()),
+                () -> assertEquals(i.getUserId(), item.getUserId()),
+                () -> assertEquals(i.getRequestId(), item.getRequestId())
+        );
     }
 
     @Test

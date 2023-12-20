@@ -13,6 +13,7 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestMapper;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.ItemRequestServiceImpl;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.transaction.Transactional;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -51,11 +53,14 @@ public class ItemRequestServiceTest {
                 .thenReturn(itemRequest);
         Mockito.when(userRepository.existsById(1L))
                 .thenReturn(true);
-        assertEquals(itemRequestService.save(ItemRequestMapper.convertToItemRequestDto(itemRequest), 1L).getDescription(), itemRequest.getDescription());
-        assertEquals(itemRequestService.save(ItemRequestMapper.convertToItemRequestDto(itemRequest), 1L).getCreated(), itemRequest.getCreated());
-        assertEquals(itemRequestService.save(ItemRequestMapper.convertToItemRequestDto(itemRequest), 1L).getUserId(), itemRequest.getUserId());
-        assertEquals(itemRequestService.save(ItemRequestMapper.convertToItemRequestDto(itemRequest), 1L).getItems().size(), itemRequest.getItems().size());
-        assertNotNull(itemRequestService.save(ItemRequestMapper.convertToItemRequestDto(itemRequest), 1L).getId());
+        ItemRequestDto ir = itemRequestService.save(ItemRequestMapper.convertToItemRequestDto(itemRequest), 1L);
+        assertAll("Should return create item request",
+                () -> assertEquals(ir.getDescription(), itemRequest.getDescription()),
+                () -> assertEquals(ir.getCreated(), itemRequest.getCreated()),
+                () -> assertEquals(ir.getUserId(), itemRequest.getUserId()),
+                () -> assertEquals(ir.getItems().size(), itemRequest.getItems().size()),
+                () -> assertNotNull(ir.getId())
+        );
     }
 
     @Test
@@ -68,10 +73,13 @@ public class ItemRequestServiceTest {
                 .thenReturn(itemRequest);
         Mockito.when(itemRepository.findAllByRequestId(anyLong()))
                 .thenReturn(items);
-        assertEquals(itemRequestService.getById(1L, 1L).getDescription(), itemRequest.getDescription());
-        assertEquals(itemRequestService.getById(1L, 1L).getCreated(), itemRequest.getCreated());
-        assertEquals(itemRequestService.getById(1L, 1L).getUserId(), itemRequest.getUserId());
-        assertEquals(itemRequestService.getById(1L, 1L).getId(), itemRequest.getId());
-        assertEquals(itemRequestService.getById(1L, 1L).getItems().size(), itemRequest.getItems().size());
+        ItemRequestDto ir = itemRequestService.getById(1L, 1L);
+        assertAll("Should return item request",
+                () -> assertEquals(ir.getDescription(), itemRequest.getDescription()),
+                () -> assertEquals(ir.getCreated(), itemRequest.getCreated()),
+                () -> assertEquals(ir.getUserId(), itemRequest.getUserId()),
+                () -> assertEquals(ir.getId(), itemRequest.getId()),
+                () -> assertEquals(ir.getItems().size(), itemRequest.getItems().size())
+        );
     }
 }

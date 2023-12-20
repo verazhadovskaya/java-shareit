@@ -14,6 +14,7 @@ import ru.practicum.shareit.errors.ValidationException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserServiceImpl;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.transaction.Transactional;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -44,9 +46,12 @@ public class UserServiceTest {
     void createUserTest() {
         Mockito.when(userRepository.save(any()))
                 .thenReturn(user);
-        assertEquals(userService.save(UserMapper.convertToUserDto(user)).getEmail(), user.getEmail());
-        assertEquals(userService.save(UserMapper.convertToUserDto(user)).getName(), user.getName());
-        assertNotNull(userService.save(UserMapper.convertToUserDto(user)).getId());
+        UserDto u = userService.save(UserMapper.convertToUserDto(user));
+        assertAll("Should return create user",
+                () -> assertEquals(u.getEmail(), user.getEmail()),
+                () -> assertEquals(u.getName(), user.getName()),
+                () -> assertNotNull(u.getId())
+        );
     }
 
     @Test
@@ -71,9 +76,12 @@ public class UserServiceTest {
         User updateUser = new User(1L, "updateUser", "updateUser@email.com");
         Mockito.when(userRepository.save(any()))
                 .thenReturn(updateUser);
-        assertEquals(userService.update(UserMapper.convertToUserDto(updateUser), 1L).getEmail(), updateUser.getEmail());
-        assertEquals(userService.update(UserMapper.convertToUserDto(updateUser), 1L).getName(), updateUser.getName());
-        assertNotNull(userService.update(UserMapper.convertToUserDto(updateUser), 1L).getId());
+        UserDto u = userService.update(UserMapper.convertToUserDto(updateUser), 1L);
+        assertAll("Should return update user",
+                () -> assertEquals(u.getEmail(), updateUser.getEmail()),
+                () -> assertEquals(u.getName(), updateUser.getName()),
+                () -> assertNotNull(u.getId())
+        );
     }
 
     @Test
@@ -120,9 +128,12 @@ public class UserServiceTest {
                 .thenReturn(user);
         Mockito.when(userRepository.existsById(1L))
                 .thenReturn(true);
-        assertEquals(userService.get(1L).getEmail(), user.getEmail());
-        assertEquals(userService.get(1L).getName(), user.getName());
-        assertEquals(userService.get(1L).getId(), user.getId());
+        UserDto u = userService.get(1L);
+        assertAll("Should return update user",
+                () -> assertEquals(u.getEmail(), user.getEmail()),
+                () -> assertEquals(u.getName(), user.getName()),
+                () -> assertEquals(u.getId(), user.getId())
+        );
     }
 
     @Test
