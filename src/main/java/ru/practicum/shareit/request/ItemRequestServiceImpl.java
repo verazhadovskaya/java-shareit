@@ -10,8 +10,6 @@ import ru.practicum.shareit.errors.ObjectNotFoundException;
 import ru.practicum.shareit.errors.ValidationException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -26,6 +24,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository repository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+
     @Override
     @Transactional
     public ItemRequestDto save(ItemRequestDto itemRequestDto, Long userId) {
@@ -33,7 +32,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         if (!userRepository.existsById(itemRequestDto.getUserId())) {
             throw new ObjectNotFoundException("Нет пользователя");
         }
-        if (itemRequestDto.getDescription()==null) {
+        if (itemRequestDto.getDescription() == null) {
             throw new ValidationException("Поле описание должно быть заполнено");
         }
         itemRequestDto.setCreated(LocalDateTime.now());
@@ -43,16 +42,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getAll(Long userId, int from, int size) {
-        if (from<0 || size ==0) {
+        if (from < 0 || size == 0) {
             throw new ValidationException("from должен быть больше или равен 0, size - больше 0");
         }
         Pageable page = PageRequest.of(from / size, size, Sort.by("created"));
-         List<ItemRequestDto> listItemRequest = repository.findAll(page).stream()
-                 .filter(obj ->obj.getUserId()!= userId)
+        List<ItemRequestDto> listItemRequest = repository.findAll(page).stream()
+                .filter(obj -> obj.getUserId() != userId)
                 .map(ItemRequestMapper::convertToItemRequestDto).collect(Collectors.toList());
         for (ItemRequestDto itemRequestDto : listItemRequest) {
             itemRequestDto.setItems(itemRepository.findAllByRequestId(itemRequestDto.getId()).stream()
-                    .map(ItemMapper :: convertToDto).collect(Collectors.toList()));
+                    .map(ItemMapper::convertToDto).collect(Collectors.toList()));
         }
         return listItemRequest;
     }
@@ -66,7 +65,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .map(ItemRequestMapper::convertToItemRequestDto).collect(Collectors.toList());
         for (ItemRequestDto itemRequestDto : listItemRequest) {
             itemRequestDto.setItems(itemRepository.findAllByRequestId(itemRequestDto.getId()).stream()
-                    .map(ItemMapper :: convertToDto).collect(Collectors.toList()));
+                    .map(ItemMapper::convertToDto).collect(Collectors.toList()));
         }
         return listItemRequest;
     }
@@ -81,7 +80,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         ItemRequestDto itemRequest = ItemRequestMapper.convertToItemRequestDto(repository.getById(id));
         itemRequest.setItems(itemRepository.findAllByRequestId(itemRequest.getId()).stream()
-                .map(ItemMapper :: convertToDto).collect(Collectors.toList()));
+                .map(ItemMapper::convertToDto).collect(Collectors.toList()));
         return itemRequest;
     }
 }
