@@ -46,7 +46,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             throw new ValidationException("from должен быть больше или равен 0, size - больше 0");
         }
         Pageable page = PageRequest.of(from / size, size, Sort.by("created"));
-        List<ItemRequestDto> listItemRequest = repository.findAll(page).stream()
+        List<ItemRequestDto> listItemRequest = repository.findAll().stream()
                 .filter(obj -> obj.getUserId() != userId)
                 .map(ItemRequestMapper::convertToItemRequestDto).collect(Collectors.toList());
         for (ItemRequestDto itemRequestDto : listItemRequest) {
