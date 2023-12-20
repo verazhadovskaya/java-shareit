@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 import ru.practicum.shareit.booking.dto.BookingDtoItemResponse;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ItemDto {
     private Long id;
     private String name;
@@ -23,4 +21,5 @@ public class ItemDto {
     private BookingDtoItemResponse lastBooking;
     private BookingDtoItemResponse nextBooking;
     private List<CommentDto> comments;
+    private Long requestId;
 }

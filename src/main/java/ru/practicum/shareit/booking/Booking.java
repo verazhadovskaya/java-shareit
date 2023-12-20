@@ -24,9 +24,6 @@ public class Booking {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @Column(name = "feedback")
-    private String feedback;
-
     @Column(name = "status")
     private BookingStatus status;
 
