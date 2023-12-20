@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
