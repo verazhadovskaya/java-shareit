@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto get(Long id) {
         if (!repository.existsById(id)) {
-            throw new ObjectNotFoundException("Нет пользователя для обновления");
+            throw new ObjectNotFoundException("Нет item");
         }
         return UserMapper.convertToUserDto(repository.getById(id));
     }

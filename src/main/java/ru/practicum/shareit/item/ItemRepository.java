@@ -34,4 +34,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             + "AND b.startDate <  :date")
     Integer findBookingItemForUserId(Long id, Long userId, BookingStatus status, LocalDateTime date);
 
+    List<Item> findAllByRequestId(Long requestId);
+
 }

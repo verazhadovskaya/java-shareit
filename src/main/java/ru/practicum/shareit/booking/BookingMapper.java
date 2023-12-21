@@ -18,7 +18,6 @@ public class BookingMapper {
         booking.setUser(user);
         booking.setStartDate(bookingDto.getStart());
         booking.setEndDate(bookingDto.getEnd());
-        booking.setFeedback(bookingDto.getFeedback());
         booking.setStatus(bookingDto.getStatus());
         return booking;
     }
@@ -30,7 +29,16 @@ public class BookingMapper {
                 .setBooker(UserMapper.convertToUserDto(booking.getUser()))
                 .setStart(booking.getStartDate())
                 .setEnd(booking.getEndDate())
-                .setFeedback(booking.getFeedback())
+                .setStatus(booking.getStatus());
+    }
+
+    public static BookingDto convertToBookingDto(Booking booking) {
+        return new BookingDto()
+                .setId(booking.getId())
+                .setItemId(booking.getItem().getId())
+                .setUserId(booking.getUser().getId())
+                .setStart(booking.getStartDate())
+                .setEnd(booking.getEndDate())
                 .setStatus(booking.getStatus());
     }
 

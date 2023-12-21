@@ -22,6 +22,5 @@ public class BookingDtoResponse {
     private UserDto booker;
     private LocalDateTime start;
     private LocalDateTime end;
-    private String feedback;
     private BookingStatus status;
 }

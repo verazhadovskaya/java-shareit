@@ -20,6 +20,5 @@ public class BookingDto {
     private Long userId;
     private LocalDateTime start;
     private LocalDateTime end;
-    private String feedback;
     private BookingStatus status;
 }
