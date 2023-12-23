@@ -56,14 +56,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(Long id) {
-        User user = repository.getById(id);
-        repository.delete(user);
+        if (!repository.existsById(id)) {
+            throw new ObjectNotFoundException("Нет пользователя");
+        }
+        repository.deleteById(id);
     }
 
     @Override
     public UserDto get(Long id) {
         if (!repository.existsById(id)) {
-            throw new ObjectNotFoundException("Нет item");
+            throw new ObjectNotFoundException("Нет пользователя");
         }
         return UserMapper.convertToUserDto(repository.getById(id));
     }
