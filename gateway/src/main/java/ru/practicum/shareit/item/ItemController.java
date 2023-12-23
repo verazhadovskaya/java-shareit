@@ -20,7 +20,6 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @RequestBody @Valid ItemDto itemDto) {
-        log.info("Creating item {}, userId={}", itemDto, userId);
         return itemClient.create(userId, itemDto);
     }
 
@@ -28,14 +27,12 @@ public class ItemController {
     public ResponseEntity<Object> update(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @PathVariable long id,
                                          @RequestBody @Valid ItemDto itemDto) {
-        log.info("Update itemId= {}, userId={}", id, userId);
         return itemClient.update(id, userId, itemDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> get(@RequestHeader("X-Sharer-User-Id") long userId,
                                       @PathVariable("id") Long id) {
-        log.info("Get itemId= {}, userId={}", id, userId);
         return itemClient.get(userId, id);
     }
 

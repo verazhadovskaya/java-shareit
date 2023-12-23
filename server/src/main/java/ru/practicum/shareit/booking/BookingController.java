@@ -38,7 +38,6 @@ public class BookingController {
                                            @RequestParam(value = "state", required = false, defaultValue = "ALL") BookingState state,
                                            @RequestParam(required = false, defaultValue = "0") Integer from,
                                            @RequestParam(required = false, defaultValue = "10") Integer size) {
-        System.out.println("Get userId={}" + userId);
         return bookingService.getAll(userId, state, from, size);
     }
 

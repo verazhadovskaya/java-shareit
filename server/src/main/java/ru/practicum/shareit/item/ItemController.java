@@ -30,13 +30,11 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        System.out.println("Get itemId= {}, userId={}" + userId);
         return itemService.getAll(userId);
     }
 
     @GetMapping("/{id}")
     public ItemDto get(@PathVariable("id") Long id, @RequestHeader("X-Sharer-User-Id") Long userId) {
-        System.out.println("Get itemId= {}, userId={}" + id + userId);
         return itemService.get(id, userId);
     }
 

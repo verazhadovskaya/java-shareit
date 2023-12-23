@@ -24,26 +24,22 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void remove(@PathVariable("id") long id) {
-        log.info("Delete id {}", id);
         userClient.removeUser(id);
     }
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody UserDto userDto) {
-        log.info("Create user= {}", userDto);
         return userClient.save(userDto);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> update(@RequestBody UserDto userDto, @PathVariable("id") long id) {
         userDto.setId(id);
-        log.info("Update user= {}, userId={}", userDto, id);
         return userClient.update(userDto, id);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> get(@PathVariable("id") long id) {
-        log.info("Get get with id {}", id);
         return userClient.get(id);
     }
 }

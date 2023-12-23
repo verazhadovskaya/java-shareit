@@ -32,7 +32,6 @@ public class BookingController {
                                          @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getAll(userId, state, from, size);
     }
 
@@ -43,14 +42,12 @@ public class BookingController {
                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getAllByOwner(userId, state, from, size);
     }
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @RequestBody @Valid BookItemRequestDto requestDto) {
-        log.info("Creating booking {}, userId={}", requestDto, userId);
         checkDate(requestDto);
         return bookingClient.create(userId, requestDto);
     }
@@ -59,14 +56,12 @@ public class BookingController {
     public ResponseEntity<Object> update(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @PathVariable Long id,
                                          @RequestParam(value = "approved") boolean approved) {
-        log.info("Update bookingId= {}, userId={}", id, userId);
         return bookingClient.update(id, userId, approved);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> get(@RequestHeader("X-Sharer-User-Id") long userId,
                                       @PathVariable long id) {
-        log.info("Get bookingId= {}, userId={}", id, userId);
         return bookingClient.get(id, userId);
     }
 
