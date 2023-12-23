@@ -12,7 +12,6 @@ import ru.practicum.shareit.itemRequest.ItemRequestClient;
 import ru.practicum.shareit.user.UserClient;
 
 @Configuration
-
 public class WebClientConfig {
 
     @Value("${shareit-server.url}")
@@ -44,7 +43,7 @@ public class WebClientConfig {
     }
 
     @Bean
-    public UserClient UserClient(RestTemplateBuilder builder) {
+    public UserClient userClient(RestTemplateBuilder builder) {
         var restTemplate = builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serviceUrl + API_PREFIX_USERS))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
@@ -54,7 +53,7 @@ public class WebClientConfig {
     }
 
     @Bean
-    public ItemRequestClient ItemRequestClient(RestTemplateBuilder builder) {
+    public ItemRequestClient itemRequestClient(RestTemplateBuilder builder) {
         var restTemplate = builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serviceUrl + API_PREFIX_IR))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
