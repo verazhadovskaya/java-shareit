@@ -123,7 +123,7 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> newListItem = new ArrayList<>();
         List<ItemDto> listItem = repository.findByUserId(userId).stream()
                 .map(ItemMapper::convertToDto)
-                .sorted((o1, o2)->o1.getId().compareTo(o2.getId()))
+                .sorted((o1, o2) -> o1.getId().compareTo(o2.getId()))
                 .collect(Collectors.toList());
         List<Booking> allBookings = repository.findBooking();
         for (ItemDto itemDto : listItem) {
